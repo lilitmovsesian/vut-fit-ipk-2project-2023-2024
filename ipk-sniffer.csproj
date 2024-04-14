@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
-	  <DebugType>embedded</DebugType>
+  <DebugType>embedded</DebugType>
     <OutputPath>./</OutputPath>
     <PublishAot>false</PublishAot>
   </PropertyGroup>
