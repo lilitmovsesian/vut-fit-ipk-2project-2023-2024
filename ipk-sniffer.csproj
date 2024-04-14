@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <Nullable>enable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+	<DebugType>embedded</DebugType>
+    <OutputPath>./</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpPcap">
+      <Version>6.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="PacketDotNet">
+      <Version>1.4.7</Version>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
