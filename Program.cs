@@ -73,5 +73,12 @@ class Program
                     break;
             }
         }
+        if (showInterfaces)
+        {
+            foreach (var dev in CaptureDeviceList.Instance)
+            {
+                Console.WriteLine(dev.Description);
+            }
+        }
     }
 }
