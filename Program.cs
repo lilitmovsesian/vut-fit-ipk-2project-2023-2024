@@ -3,7 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using SharpPcap;
 using PacketDotNet;
-﻿using System;
+using System;
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using SharpPcap.LibPcap;
@@ -78,12 +79,45 @@ class Program
                     break;
             }
         }
+        var devices = CaptureDeviceList.Instance;
         if (showInterfaces)
         {
-            foreach (var dev in CaptureDeviceList.Instance)
+            foreach (var dev in devices)
             {
                 Console.WriteLine(dev.Description);
             }
+            Environment.Exit(0);
         }
+        LibPcapLiveDevice? device = null;
+        foreach (var dev in devices)
+        {
+            if (interfaceName == dev.Name) {
+                device = dev;
+                break;
+            }
+        }
+        if (device != null) {
+            device.OnPacketArrival += PacketHandler;
+            device.Open(DeviceMode.Promiscuous, 3000);
+
+            device.StartCapture();
+
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                device.StopCapture();
+                device.Close();
+                Environment.Exit(0);
+            };
+        }
+
+    }
+    static void PacketHandler(object sender, CaptureEventArgs e)
+    {
+        var time = e.Packet.Timeval.Date;
+        var output = new StringBuilder();
+
+        output.AppendLine($"timestamp: {time}");
+
+        Console.WriteLine(output.ToString());
     }
 }
