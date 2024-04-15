@@ -3,6 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using SharpPcap;
 using PacketDotNet;
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using SharpPcap.LibPcap;
+using System.Net.NetworkInformation;
 
 class Program
 {
