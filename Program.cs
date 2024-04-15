@@ -8,7 +8,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        string interfaceName = null;
+        string? interfaceName = null;
         bool showInterfaces = false;
         bool tcp = false;
         bool udp = false;
