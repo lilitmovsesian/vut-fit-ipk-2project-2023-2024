@@ -12,112 +12,236 @@ using System.Net.NetworkInformation;
 
 class Program
 {
+    private static string? _interfaceName = null;
+    private static bool _showInterfaces = false;
+    private static bool _tcp = false;
+    private static bool _udp = false;
+    private static int? _port = null;
+    private static int? _sourcePort = null;
+    private static int? _destinationPort = null;
+    private static bool _arp = false;
+    private static bool _ndp = false;
+    private static bool _icmp4 = false;
+    private static bool _icmp6 = false;
+    private static bool _igmp = false;
+    private static bool _mld = false;
+    private static int _numberOfPackets = 1;
+    private static int _counter = 0;
+    private static ICaptureDevice? _device = null;
     static void Main(string[] args)
     {
-        string? interfaceName = null;
-        bool showInterfaces = false;
-        bool tcp = false;
-        bool udp = false;
-        int? port = null;
-        int? sourcePort = null;
-        int? destinationPort = null;
-        bool arp = false;
-        bool ndp = false;
-        bool icmp4 = false;
-        bool icmp6 = false;
-        bool igmp = false;
-        bool mld = false;
-        int numberOfPackets = 1;
 
         for (int i = 0; i < args.Length; i++){
             switch (args[i]){
                 case "-i":
                 case "--interface":
                     if (i + 1 < args.Length && !args[i + 1].StartsWith("-")) {
-                        interfaceName = args[i + 1];
+                        _interfaceName = args[i + 1];
                     }
                     else {
-                        showInterfaces = true;
+                        _showInterfaces = true;
                     }
                     break;
                 case "-p":
-                    port = int.Parse(args[i + 1]);
+                    _port = int.Parse(args[i + 1]);
                     break;
                 case "--port-source":
-                    sourcePort = int.Parse(args[i + 1]);
+                    _sourcePort = int.Parse(args[i + 1]);
                     break;
                 case "--port-destination":
-                    destinationPort = int.Parse(args[i + 1]);
+                    _destinationPort = int.Parse(args[i + 1]);
                     break;
                 case "--tcp":
                 case "-t":
-                    tcp = true;
+                    _tcp = true;
                     break;
                 case "--udp":
                 case "-u":
-                    udp = true;
+                    _udp = true;
                     break;
                 case "--arp":
-                    arp = true;
+                    _arp = true;
                     break;
                 case "--icmp4":
-                    icmp4 = true;
+                    _icmp4 = true;
                     break;
                 case "--icmp6":
-                    icmp6 = true;
+                    _icmp6 = true;
                     break;
                 case "--igmp":
-                    igmp = true;
+                    _igmp = true;
                     break;
                 case "--mld":
-                    mld = true;
+                    _mld = true;
                     break;
                 case "-n":
-                    numberOfPackets = int.Parse(args[i + 1]);
+                    _numberOfPackets = int.Parse(args[i + 1]);
                     break;
                 default:
                     break;
             }
         }
         var devices = CaptureDeviceList.Instance;
-        if (showInterfaces)
+        if (_showInterfaces)
         {
             foreach (var dev in devices)
             {
-                Console.WriteLine(dev.Description);
+                Console.WriteLine(dev.Name);
             }
             Environment.Exit(0);
         }
-        LibPcapLiveDevice? device = null;
         foreach (var dev in devices)
         {
-            if (interfaceName == dev.Name) {
-                device = dev;
+            if (_interfaceName.Equals(dev.Name, StringComparison.OrdinalIgnoreCase) && _interfaceName != null && dev.Name != null) {
+                _device = dev;
                 break;
             }
         }
-        if (device != null) {
-            device.OnPacketArrival += PacketHandler;
-            device.Open(DeviceMode.Promiscuous, 3000);
-
-            device.StartCapture();
-
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                device.StopCapture();
-                device.Close();
-                Environment.Exit(0);
-            };
+        if (_device == null)
+        {
+            Console.WriteLine("Failed to find the specified interface.");
+            Environment.Exit(1);
         }
 
+        ApplyFilters();
+
+        _device.OnPacketArrival += PacketHandler;
+        _device.Open(DeviceMode.Promiscuous, 100);
+
+        _device.StartCapture();
+        Console.CancelKeyPress += (sender, e) =>
+        {
+            _device.StopCapture();
+            _device.Close();
+            Environment.Exit(0);
+        };
+        while (true) { }
+    }
+
+    static void ApplyFilters()
+    {
+        if (_tcp)
+        {
+            _device.Filter = "tcp";
+        }
+        if (_udp)
+        {
+            _device.Filter = "udp";
+        }
     }
     static void PacketHandler(object sender, CaptureEventArgs e)
     {
-        var time = e.Packet.Timeval.Date;
+        var time = FormatTime(e.Packet.Timeval.Date);
         var output = new StringBuilder();
 
         output.AppendLine($"timestamp: {time}");
 
+        var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+        var ip = packet.Extract<PacketDotNet.IPPacket>();
+        PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
+        PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
+        var ethernetPacket = (PacketDotNet.EthernetPacket)packet;
+        string sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
+        string destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
+        
+        output.AppendLine($"src MAC: {sourceMac}");
+        output.AppendLine($"dst MAC: {destinationMac}");
+        output.AppendLine($"frame length: {e.Packet.Data.Length} bytes");
+        output.AppendLine($"src IP: {ip.SourceAddress}");
+        output.AppendLine($"dst IP: {ip.DestinationAddress}");
+        if (tcp != null)
+        {
+            if ((_sourcePort == null || tcp.SourcePort == _sourcePort) &&
+                (_destinationPort == null || tcp.DestinationPort == _destinationPort))
+            {
+                AppendTcpDetails(output, tcp);
+            }
+        }
+        else if (udp != null)
+        {
+            if ((_sourcePort == null || udp.SourcePort == _sourcePort) &&
+                (_destinationPort == null || udp.DestinationPort == _destinationPort))
+            {
+                AppendUdpDetails(output, udp);
+            }
+        }
+        output.AppendLine();
+        output.AppendLine(PrintHex(packet));
+
         Console.WriteLine(output.ToString());
+        if (++_counter != _numberOfPackets)
+        {
+            Console.WriteLine();
+            return;
+        }
+        
+        _device.StopCapture();
+        _device.Close();
+        Environment.Exit(0);
     }
+
+    static void AppendTcpDetails(StringBuilder output, PacketDotNet.TcpPacket tcpPacket)
+    {
+        output.AppendLine($"src port: {tcpPacket.SourcePort}");
+        output.AppendLine($"dst port: {tcpPacket.DestinationPort}");
+    }
+
+    static void AppendUdpDetails(StringBuilder output, PacketDotNet.UdpPacket udpPacket)
+    {
+        output.AppendLine($"src port: {udpPacket.SourcePort}");
+        output.AppendLine($"dst port: {udpPacket.DestinationPort}");
+    }
+
+    static string FormatMac(string macAddress)
+    {
+        var formattedMac = new StringBuilder();
+        int j = 0;
+        for (int i = 0; i < macAddress.Length; i++)
+        {
+            if (j==2){
+                formattedMac.Append(":");
+                j = 0;
+            }
+            formattedMac.Append(char.ToLower(macAddress[i]));
+            j++;
+        }
+        
+        return formattedMac.ToString();
+    }
+
+    static string FormatTime(DateTime time)
+    {
+        var formattedTime = new StringBuilder();
+        var utcOffset = (TimeZoneInfo.Local.GetUtcOffset(DateTime.Now)).ToString().Substring(0, 5);
+        var month = (time.Month).ToString();
+        formattedTime.Append($"{time.Year}-{time.Month.ToString("00")}-{time.Day.ToString("00")}T{time.Hour.ToString("00")}:{time.Minute.ToString("00")}:{time.Second.ToString("00")}.{time.Millisecond.ToString("000")}+{utcOffset}");
+        return formattedTime.ToString();
+    }
+
+   static string PrintHex(PacketDotNet.Packet packet)
+    {
+        var data = packet.Bytes;
+        var output = new StringBuilder();
+        for (int i = 0; i < data.Length; i += 16)
+        {
+            output.Append($"0x{i:x4}: ");
+            for (int j = 0; j < 16 && i + j < data.Length; j++)
+            {
+                output.Append($"{data[i + j]:x2} ");
+            }
+            if (data.Length - i < 16)
+            {
+                output.Append(new string(' ', 3 * (16 - (data.Length - i))));
+            }
+            output.Append(" ");
+            for (int j = 0; j < 16 && i + j < data.Length; j++)
+            {
+                char c = (char)data[i + j];
+                output.Append((c >= 32 && c <= 126) ? c : '.');
+            }
+            output.AppendLine();
+        }
+        return output.ToString();
+    }
+
 }
