@@ -137,13 +137,15 @@ class Program
         output.AppendLine($"timestamp: {time}");
 
         var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+        if (packet is PacketDotNet.NullPacket){
+            return;
+        }
         var ip = packet.Extract<PacketDotNet.IPPacket>();
         PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
         PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
         var ethernetPacket = (PacketDotNet.EthernetPacket)packet;
-        string sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
-        string destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
-        
+        var sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
+        var destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
         output.AppendLine($"src MAC: {sourceMac}");
         output.AppendLine($"dst MAC: {destinationMac}");
         output.AppendLine($"frame length: {e.Packet.Data.Length} bytes");
@@ -171,25 +173,12 @@ class Program
         Console.WriteLine(output.ToString());
         if (++_counter != _numberOfPackets)
         {
-            Console.WriteLine();
             return;
         }
         
         _device.StopCapture();
         _device.Close();
         Environment.Exit(0);
-    }
-
-    static void AppendTcpDetails(StringBuilder output, PacketDotNet.TcpPacket tcpPacket)
-    {
-        output.AppendLine($"src port: {tcpPacket.SourcePort}");
-        output.AppendLine($"dst port: {tcpPacket.DestinationPort}");
-    }
-
-    static void AppendUdpDetails(StringBuilder output, PacketDotNet.UdpPacket udpPacket)
-    {
-        output.AppendLine($"src port: {udpPacket.SourcePort}");
-        output.AppendLine($"dst port: {udpPacket.DestinationPort}");
     }
 
     static string FormatMac(string macAddress)
@@ -207,6 +196,18 @@ class Program
         }
         
         return formattedMac.ToString();
+    }
+
+    static void AppendTcpDetails(StringBuilder output, PacketDotNet.TcpPacket tcpPacket)
+    {
+        output.AppendLine($"src port: {tcpPacket.SourcePort}");
+        output.AppendLine($"dst port: {tcpPacket.DestinationPort}");
+    }
+
+    static void AppendUdpDetails(StringBuilder output, PacketDotNet.UdpPacket udpPacket)
+    {
+        output.AppendLine($"src port: {udpPacket.SourcePort}");
+        output.AppendLine($"dst port: {udpPacket.DestinationPort}");
     }
 
     static string FormatTime(DateTime time)
@@ -243,5 +244,6 @@ class Program
         }
         return output.ToString();
     }
+
 
 }
