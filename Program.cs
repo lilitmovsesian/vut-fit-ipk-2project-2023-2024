@@ -103,10 +103,10 @@ class Program
             Environment.Exit(1);
         }
 
-        ApplyFilters();
-
         _device.OnPacketArrival += PacketHandler;
         _device.Open(DeviceMode.Promiscuous, 100);
+        
+        ApplyFilters();
 
         _device.StartCapture();
         Console.CancelKeyPress += (sender, e) =>
@@ -120,14 +120,94 @@ class Program
 
     static void ApplyFilters()
     {
-        if (_tcp)
+        var filter = "";
+        bool or = false;
+        if (_tcp || _udp)
         {
-            _device.Filter = "tcp";
+            filter += "(";
+            if (_tcp != null && _udp == null)
+            {
+                filter += " tcp ";
+            }
+            if (_udp != null && _tcp == null)
+            {
+                filter += " udp ";
+            }
+            if (_udp != null && _tcp != null)
+            {
+                filter += " tcp or udp ";
+            }
+            if (_port != null)
+            {
+                filter += " and port " + _port + " ";
+            }
+            if (_sourcePort != null)
+            {
+                filter += $" and src port {_sourcePort} ";
+            }
+            if (_destinationPort != null)
+            {
+                filter += $" and dst port {_destinationPort} ";
+            }
+            filter += ")";
+            or = true;
         }
-        if (_udp)
+        
+        if (_arp)
         {
-            _device.Filter = "udp";
+            if (or)
+                filter += " or arp ";
+            else {
+                filter += " arp ";
+                or = true;
+            }
         }
+        if (_ndp)
+        {
+            if (or)
+                filter += " or (icmp6 and icmpv6.type == 135) ";
+            else {
+                filter += " (icmp6 and icmpv6.type == 135) ";
+                or = true;
+            }
+        }
+        if (_icmp4)
+        {
+            if (or)
+                filter += " or icmp ";
+            else {
+                filter += " icmp ";
+                or = true;
+            }
+        }
+        if (_icmp6)
+        {
+            if (or)
+                filter += " or icmp6 ";
+            else {
+                filter += " icmp6 ";
+                or = true;
+            }   
+        }
+        if (_igmp)
+        {
+            if (or)
+                filter += " or igmp ";
+            else {
+                filter += " igmp ";
+                or = true;
+            }  
+        }
+        if (_mld)
+        {
+            if (or)
+                filter += " or (icmp6 and icmpv6.type == 130) ";
+            else {
+                filter += " (icmp6 and icmpv6.type == 130) ";
+                or = true;
+            }  
+        }
+        _device.Filter = filter;
     }
     static void PacketHandler(object sender, CaptureEventArgs e)
     {
