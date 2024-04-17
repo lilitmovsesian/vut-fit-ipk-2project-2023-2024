@@ -105,17 +105,16 @@ class Program
             Console.WriteLine("Failed to find the specified interface.");
             Environment.Exit(1);
         }
-        _device.Open(DeviceMode.Promiscuous, 100);
-        
-        ApplyFilters();
-        _device.OnPacketArrival += PacketHandler;
-        _device.StartCapture();
         Console.CancelKeyPress += (sender, e) =>
         {
             _device.StopCapture();
             _device.Close();
             Environment.Exit(0);
         };
+        _device.Open(DeviceMode.Promiscuous, 100);
+        ApplyFilters();
+        _device.OnPacketArrival += PacketHandler;
+        _device.StartCapture();
     }
 
     static void ApplyFilters()
