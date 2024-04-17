@@ -214,21 +214,20 @@ class Program
     }
     static void PacketHandler(object sender, CaptureEventArgs e)
     {
+        var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+        if (packet is PacketDotNet.NullPacket){
+            return;
+        }
+        PacketDotNet.IPPacket ip = packet.Extract<PacketDotNet.IPPacket>();
+        PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
+        PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
+        PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
+
         var time = FormatTime(e.Packet.Timeval.Date);
         var output = new StringBuilder();
 
         output.AppendLine($"timestamp: {time}");
 
-        var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
-        if (packet is PacketDotNet.NullPacket){
-            return;
-        }
-        var ip = packet.Extract<PacketDotNet.IPPacket>();
-        PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
-        PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
-        PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
-
-        //var ethernetPacket = (PacketDotNet.EthernetPacket)packet;
         if (ethernetPacket != null){
             var sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
             var destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
