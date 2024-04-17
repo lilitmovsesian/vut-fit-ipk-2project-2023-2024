@@ -6,7 +6,6 @@ using PacketDotNet;
 using System;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;
 using SharpPcap.LibPcap;
 using System.Net.NetworkInformation;
 
@@ -106,11 +105,10 @@ class Program
             Console.WriteLine("Failed to find the specified interface.");
             Environment.Exit(1);
         }
-        _device.OnPacketArrival += PacketHandler;
         _device.Open(DeviceMode.Promiscuous, 100);
         
         ApplyFilters();
-
+        _device.OnPacketArrival += PacketHandler;
         _device.StartCapture();
         Console.CancelKeyPress += (sender, e) =>
         {
