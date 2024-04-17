@@ -221,6 +221,7 @@ class Program
         PacketDotNet.IPPacket ip = packet.Extract<PacketDotNet.IPPacket>();
         PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
         PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
+        PacketDotNet.ArpPacket arp = packet.Extract<PacketDotNet.ArpPacket>();
         PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
 
         var time = FormatTime(e.Packet.Timeval.Date);
@@ -235,8 +236,10 @@ class Program
             output.AppendLine($"dst MAC: {destinationMac}");
         }
         output.AppendLine($"frame length: {e.Packet.Data.Length} bytes");
-        output.AppendLine($"src IP: {ip.SourceAddress}");
-        output.AppendLine($"dst IP: {ip.DestinationAddress}");
+        if (arp == null) {
+            output.AppendLine($"src IP: {ip.SourceAddress}");
+            output.AppendLine($"dst IP: {ip.DestinationAddress}");
+        }
         if (tcp != null)
         {
             AppendTcpDetails(output, tcp);
