@@ -74,6 +74,9 @@ class Program
                 case "--mld":
                     _mld = true;
                     break;
+                case "--ndp":
+                    _ndp = true;
+                    break;
                 case "-n":
                     _numberOfPackets = int.Parse(args[i + 1]);
                     break;
@@ -166,9 +169,9 @@ class Program
         if (_ndp)
         {
             if (or)
-                filter += " or (icmp6 and icmp6.type == 135) ";
+                filter += " or (icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
             else {
-                filter += " (icmp6 and icmp6.type == 135) ";
+                filter += " (icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
                 or = true;
             }
         }
@@ -202,9 +205,9 @@ class Program
         if (_mld)
         {
             if (or)
-                filter += " or (icmp6 and icmp6.type == 130) ";
+                filter += " or (icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
             else {
-                filter += " (icmp6 and icmp6.type == 130) ";
+                filter += " (icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
                 or = true;
             }  
         }
