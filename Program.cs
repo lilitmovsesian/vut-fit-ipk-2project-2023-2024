@@ -92,9 +92,11 @@ class Program
         }
         foreach (var dev in devices)
         {
-            if (_interfaceName.Equals(dev.Name, StringComparison.OrdinalIgnoreCase) && _interfaceName != null && dev.Name != null) {
-                _device = dev;
-                break;
+            if (_interfaceName != null && dev.Name != null) {
+                if (_interfaceName.Equals(dev.Name, StringComparison.OrdinalIgnoreCase)) {
+                    _device = dev;
+                    break;
+                }
             }
         }
         if (_device == null)
@@ -102,11 +104,10 @@ class Program
             Console.WriteLine("Failed to find the specified interface.");
             Environment.Exit(1);
         }
-
+        ApplyFilters();
         _device.OnPacketArrival += PacketHandler;
         _device.Open(DeviceMode.Promiscuous, 100);
         
-        ApplyFilters();
 
         _device.StartCapture();
         Console.CancelKeyPress += (sender, e) =>
@@ -125,17 +126,17 @@ class Program
         if (_tcp || _udp)
         {
             filter += "(";
-            if (_tcp != null && _udp == null)
+            if (_tcp && !_udp)
             {
                 filter += " tcp ";
             }
-            if (_udp != null && _tcp == null)
+            if (_udp && !_tcp)
             {
                 filter += " udp ";
             }
-            if (_udp != null && _tcp != null)
+            if (_udp && _tcp)
             {
-                filter += " tcp or udp ";
+                filter += " (tcp or udp) ";
             }
             if (_port != null)
             {
@@ -165,9 +166,9 @@ class Program
         if (_ndp)
         {
             if (or)
-                filter += " or (icmp6 and icmpv6.type == 135) ";
+                filter += " or (icmp6 and icmp6.type == 135) ";
             else {
-                filter += " (icmp6 and icmpv6.type == 135) ";
+                filter += " (icmp6 and icmp6.type == 135) ";
                 or = true;
             }
         }
@@ -201,13 +202,15 @@ class Program
         if (_mld)
         {
             if (or)
-                filter += " or (icmp6 and icmpv6.type == 130) ";
+                filter += " or (icmp6 and icmp6.type == 130) ";
             else {
-                filter += " (icmp6 and icmpv6.type == 130) ";
+                filter += " (icmp6 and icmp6.type == 130) ";
                 or = true;
             }  
         }
-        _device.Filter = filter;
+        if (_device != null && !string.IsNullOrEmpty(filter)){
+            _device.Filter = filter;
+        }
     }
     static void PacketHandler(object sender, CaptureEventArgs e)
     {
@@ -223,30 +226,27 @@ class Program
         var ip = packet.Extract<PacketDotNet.IPPacket>();
         PacketDotNet.TcpPacket tcp = packet.Extract<PacketDotNet.TcpPacket>();
         PacketDotNet.UdpPacket udp = packet.Extract<PacketDotNet.UdpPacket>();
-        var ethernetPacket = (PacketDotNet.EthernetPacket)packet;
-        var sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
-        var destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
-        output.AppendLine($"src MAC: {sourceMac}");
-        output.AppendLine($"dst MAC: {destinationMac}");
+        PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
+
+        //var ethernetPacket = (PacketDotNet.EthernetPacket)packet;
+        if (ethernetPacket != null){
+            var sourceMac = FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
+            var destinationMac = FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
+            output.AppendLine($"src MAC: {sourceMac}");
+            output.AppendLine($"dst MAC: {destinationMac}");
+        }
         output.AppendLine($"frame length: {e.Packet.Data.Length} bytes");
         output.AppendLine($"src IP: {ip.SourceAddress}");
         output.AppendLine($"dst IP: {ip.DestinationAddress}");
         if (tcp != null)
         {
-            if ((_sourcePort == null || tcp.SourcePort == _sourcePort) &&
-                (_destinationPort == null || tcp.DestinationPort == _destinationPort))
-            {
-                AppendTcpDetails(output, tcp);
-            }
+            AppendTcpDetails(output, tcp);
         }
         else if (udp != null)
         {
-            if ((_sourcePort == null || udp.SourcePort == _sourcePort) &&
-                (_destinationPort == null || udp.DestinationPort == _destinationPort))
-            {
-                AppendUdpDetails(output, udp);
-            }
+            AppendUdpDetails(output, udp);
         }
+        
         output.AppendLine();
         output.AppendLine(PrintHex(packet));
 
@@ -256,8 +256,10 @@ class Program
             return;
         }
         
-        _device.StopCapture();
-        _device.Close();
+        if (_device != null){
+            _device.StopCapture();
+            _device.Close();
+        }
         Environment.Exit(0);
     }
 
