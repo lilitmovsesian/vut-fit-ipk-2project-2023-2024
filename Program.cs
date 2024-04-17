@@ -30,7 +30,6 @@ class Program
     private static ICaptureDevice? _device = null;
     static void Main(string[] args)
     {
-
         for (int i = 0; i < args.Length; i++){
             switch (args[i]){
                 case "-i":
@@ -119,7 +118,6 @@ class Program
             _device.Close();
             Environment.Exit(0);
         };
-        while (true) { }
     }
 
     static void ApplyFilters()
@@ -331,6 +329,4 @@ class Program
         }
         return output.ToString();
     }
-
-
 }
