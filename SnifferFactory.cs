@@ -61,8 +61,11 @@ namespace ipkSniffer
 
         public static void ParseArguments(string[] args)
         {
-            if (args.Length == 0 || (args.Length == 1 && args[0] != "-i")){
-                Console.Error.WriteLine("Error: Invalid arguments.");
+            if (args.Length == 0){
+                _showInterfaces = true;
+            }
+            if (args.Length == 1 && (args[0] != "-i" && args[0] != "--interface")){
+                Console.Error.WriteLine("Error: Interface unspecified.");
                 Environment.Exit(1);
             }
             for (int i = 0; i < args.Length; i++){
@@ -142,7 +145,7 @@ namespace ipkSniffer
                         break;
                 }
             }
-            if (args.Length != 1 && _interfaceName == null){
+            if (args.Length > 1 && _interfaceName == null){
                 Console.Error.WriteLine("Error: Interface unspecified.");
                 Environment.Exit(1);
             }
