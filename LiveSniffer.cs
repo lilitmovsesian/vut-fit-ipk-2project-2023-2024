@@ -35,7 +35,7 @@ namespace ipkSniffer
         {
             if (_device == null)
             {
-                Console.Error.WriteLine("Failed to find the specified interface.");
+                Console.Error.WriteLine("Error: Failed to find the specified interface.");
                 Environment.Exit(1);
             }
             Console.CancelKeyPress += (sender, e) =>

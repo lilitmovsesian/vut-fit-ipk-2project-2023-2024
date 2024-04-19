@@ -53,7 +53,7 @@ namespace ipkSniffer
             }
             if (_device == null)
             {
-                Console.Error.WriteLine("Failed to find the specified interface.");
+                Console.Error.WriteLine("Error: Failed to find the specified interface.");
                 Environment.Exit(1);
             }
             return new LiveSniffer(_device, _tcp, _udp, _port, _sourcePort, _destinationPort, _arp, _ndp, _icmp4, _icmp6, _igmp, _mld, _numberOfPackets);
@@ -62,7 +62,7 @@ namespace ipkSniffer
         public static void ParseArguments(string[] args)
         {
             if (args.Length == 0 || (args.Length == 1 && args[0] != "-i")){
-                Console.Error.WriteLine("Invalid arguments.");
+                Console.Error.WriteLine("Error: Invalid arguments.");
                 Environment.Exit(1);
             }
             for (int i = 0; i < args.Length; i++){
@@ -81,7 +81,7 @@ namespace ipkSniffer
                             _port = int.Parse(args[i + 1]);
                         }
                         else{
-                            Console.Error.WriteLine("Invalid arguments.");
+                            Console.Error.WriteLine("Error: Invalid arguments.");
                             Environment.Exit(1);
                         }
                         break;
@@ -90,7 +90,7 @@ namespace ipkSniffer
                             _sourcePort = int.Parse(args[i + 1]);
                         }
                         else{
-                            Console.Error.WriteLine("Invalid arguments.");
+                            Console.Error.WriteLine("Error: Invalid arguments.");
                             Environment.Exit(1);
                         }
                         break;
@@ -99,7 +99,7 @@ namespace ipkSniffer
                             _destinationPort = int.Parse(args[i + 1]);
                         }
                         else{
-                            Console.Error.WriteLine("Invalid arguments.");
+                            Console.Error.WriteLine("Error: Invalid arguments.");
                             Environment.Exit(1);
                         }
                         break;
@@ -134,7 +134,7 @@ namespace ipkSniffer
                             _numberOfPackets = int.Parse(args[i + 1]);
                         }
                         else{
-                            Console.Error.WriteLine("Invalid arguments.");
+                            Console.Error.WriteLine("Error: Invalid arguments.");
                             Environment.Exit(1);
                         }
                         break;
@@ -143,7 +143,15 @@ namespace ipkSniffer
                 }
             }
             if (args.Length != 1 && _interfaceName == null){
-                Console.Error.WriteLine("Interface unspecified.");
+                Console.Error.WriteLine("Error: Interface unspecified.");
+                Environment.Exit(1);
+            }
+            if ((_port != null || _destinationPort != null || _sourcePort != null) && !_tcp && !_udp){
+                Console.Error.WriteLine("Error: --tcp or --udp argument should be specified.");
+                Environment.Exit(1);
+            }
+            if (_port != null && (_destinationPort != null || _sourcePort != null)){
+                Console.Error.WriteLine("Error: -p argument cannot be specified with --port-source and --port-destination arguments.");
                 Environment.Exit(1);
             }
         }
