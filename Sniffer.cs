@@ -169,45 +169,45 @@ namespace ipkSniffer
             if (_ndp)
             {
                 if (or)
-                    filter += " or (icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
+                    filter += " or (ip6 and icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
                 else {
-                    filter += " (icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
+                    filter += " (ip6 and icmp6 and (icmp6[0] = 133 or icmp6[0] = 134 or icmp6[0] = 135 or icmp6[0] = 136 or icmp6[0] = 137)) ";
                     or = true;
                 }
             }
             if (_icmp4)
             {
                 if (or)
-                    filter += " or icmp ";
+                    filter += " or (ip and icmp) ";
                 else {
-                    filter += " icmp ";
+                    filter += " (ip and icmp) ";
                     or = true;
                 }
             }
             if (_icmp6)
             {
                 if (or)
-                    filter += " or icmp6 ";
+                    filter += " or (ip6 and icmp6) ";
                 else {
-                    filter += " icmp6 ";
+                    filter += " (ip6 and icmp6) ";
                     or = true;
                 }   
             }
             if (_igmp)
             {
                 if (or)
-                    filter += " or igmp ";
+                    filter += " or (ip and igmp) ";
                 else {
-                    filter += " igmp ";
+                    filter += " (ip and igmp) ";
                     or = true;
                 }  
             }
             if (_mld)
             {
                 if (or)
-                    filter += " or (icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
+                    filter += " or (ip6 and icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
                 else {
-                    filter += " (icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
+                    filter += " (ip6 and icmp6 and (icmp6[0] = 130 or icmp6[0] = 131 or icmp6[0] = 132 or icmp6[0] = 143)) ";
                     or = true;
                 }  
             }
