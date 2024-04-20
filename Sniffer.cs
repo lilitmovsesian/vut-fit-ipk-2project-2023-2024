@@ -13,20 +13,20 @@ namespace ipkSniffer
 {
     public class Sniffer : ISniffer
     {
-        private static bool _tcp = false;
-        private static bool _udp = false;
-        private static int? _port = null;
-        private static int? _sourcePort = null;
-        private static int? _destinationPort = null;
-        private static bool _arp = false;
-        private static bool _ndp = false;
-        private static bool _icmp4 = false;
-        private static bool _icmp6 = false;
-        private static bool _igmp = false;
-        private static bool _mld = false;
-        private static int _numberOfPackets = 1;
-        private static ICaptureDevice? _device = null;
-        private static int _counter = 0;
+        private bool _tcp = false;
+        private bool _udp = false;
+        private int? _port = null;
+        private int? _sourcePort = null;
+        private int? _destinationPort = null;
+        private bool _arp = false;
+        private bool _ndp = false;
+        private bool _icmp4 = false;
+        private bool _icmp6 = false;
+        private bool _igmp = false;
+        private bool _mld = false;
+        private int _numberOfPackets = 1;
+        private ICaptureDevice? _device = null;
+        private int _counter = 0;
         public Sniffer(ICaptureDevice device, bool tcp, bool udp, int? port, int? sourcePort, int? destinationPort, bool arp, bool ndp, bool icmp4, bool icmp6, bool igmp, bool mld, int numberOfPackets)
         {
             _device = device;
