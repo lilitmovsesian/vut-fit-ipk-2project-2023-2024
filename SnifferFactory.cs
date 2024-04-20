@@ -56,7 +56,7 @@ namespace ipkSniffer
                 Console.Error.WriteLine("Error: Failed to find the specified interface.");
                 Environment.Exit(1);
             }
-            return new LiveSniffer(_device, _tcp, _udp, _port, _sourcePort, _destinationPort, _arp, _ndp, _icmp4, _icmp6, _igmp, _mld, _numberOfPackets);
+            return new Sniffer(_device, _tcp, _udp, _port, _sourcePort, _destinationPort, _arp, _ndp, _icmp4, _icmp6, _igmp, _mld, _numberOfPackets);
         }
 
         public static void ParseArguments(string[] args)
