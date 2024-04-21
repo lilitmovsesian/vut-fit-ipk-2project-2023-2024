@@ -200,9 +200,9 @@ namespace ipkSniffer
             if (_icmp6)
             {
                 if (or)
-                    filter += " or (ip6 and icmp6) ";
+                    filter += " or (ip6 and icmp6 and (icmp6[0] = 128 or icmp6[0] = 129)) ";
                 else {
-                    filter += " (ip6 and icmp6) ";
+                    filter += " (ip6 and icmp6 and (icmp6[0] = 128 or icmp6[0] = 129)) ";
                     or = true;
                 }   
             }

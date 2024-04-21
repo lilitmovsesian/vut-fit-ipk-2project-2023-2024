@@ -200,7 +200,7 @@ Test Case 10 - ICMP4 on loopback interface with inappropriate filtering:
     sudo ./ipk-sniffer -i lo --icmp6
     ^C
 
-Test Case 11 - ICMP6 on loopback interface with appropriate filtering:
+Test Case 11 - ICMP6 echo request on loopback interface with appropriate filtering:
 
     ping6 -c 1 -i lo ::1
 
@@ -222,7 +222,7 @@ Test Case 11 - ICMP6 on loopback interface with appropriate filtering:
     0x0060: 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31  "#$%&'()*+,-./01
     0x0070: 32 33 34 35 36 37                                234567
 
-Test Case 12 - ICMP6 on loopback interface with inappropriate filtering:
+Test Case 12 - ICMP6 echo request on loopback interface with inappropriate filtering:
 
     ping6 -c 1 -i lo ::1
 
@@ -254,20 +254,7 @@ Test Case 14 - NDP on the eth0 interface with ICMP6 filtering:
     ping6 fe80::1 -c 1
  
     sudo ./ipk-sniffer -i eth0 --icmp6
-
-    timestamp: 2024-04-21T13:06:57.001+02:00
-    src MAC: 00:15:5d:a1:d5:93
-    dst MAC: 33:33:ff:00:00:01
-    frame length: 86 bytes
-    src IP: fe80::215:5dff:fea1:d593
-    dst IP: ff02::1:ff00:1
-    byte_offset:
-    0x0000: 33 33 ff 00 00 01 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
-    0x0010: 00 00 00 20 3a ff fe 80 00 00 00 00 00 00 02 15  ... :...........
-    0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
-    0x0030: 00 01 ff 00 00 01 87 00 15 07 87 00 15 07 00 00  ................
-    0x0040: 00 00 fe 80 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    0x0050: 00 01 01 01 00 15 5d a1 d5 93                    ......]...
+    ^C
 
 Test Case 15 - IGMP on loopback interface with appropriate filtering:
     
@@ -339,20 +326,7 @@ Test Case 18 - MLD on the eth0 interface with ICMP6 filtering:
     sudo python3 test.py
 
     sudo ./ipk-sniffer -i eth0 --icmp6
-
-    timestamp: 2024-04-21T13:08:50.737+02:00
-    src MAC: 00:15:5d:a1:d5:93
-    dst MAC: 33:33:00:00:00:16
-    frame length: 78 bytes
-    src IP: fe80::215:5dff:fea1:d593
-    dst IP: ff02::16
-    byte_offset:
-    0x0000: 33 33 00 00 00 16 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
-    0x0010: 00 00 00 18 3a 01 fe 80 00 00 00 00 00 00 02 15  ....:...........
-    0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
-    0x0030: 00 00 00 00 00 16 83 00 4a c9 00 00 00 00 00 00  ........J.......
-    0x0040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00        ..............
-
+    ^C
 
 Test Case 19 - CLI Arguments:
 
@@ -493,6 +467,45 @@ Test Case 28 - 2 packets capture on the loopback interface - UDP:
     0x0030: 40 00 40 11 d4 88 7f 00 00 01 7f 00 00 01 11 c6  @.@.............
     0x0040: 11 c7 00 14 fe 27 48 65 6c 6c 6f 20 77 6f 72 6c  .....'Hello worl
     0x0050: 64 0a                                            d.
+
+Test Case 29 - 2 packets capture on the loopback interface - ICMP6 echo request/response:
+
+    ping6 -c 1 -i lo ::1
+
+    sudo ./ipk-sniffer -i lo --icmp6 -n 2
+    
+    timestamp: 2024-04-21T19:54:40.564+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 118 bytes
+    src IP: ::1
+    dst IP: ::1
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 86 dd 60 00  ..............`.
+    0x0010: 00 50 00 40 3a 40 00 00 00 00 00 00 00 00 00 00  .P.@:@..........
+    0x0020: 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00  ................
+    0x0030: 00 00 00 00 00 01 80 00 c1 b3 19 8a 00 01 00 6f  ...............o
+    0x0040: 25 66 00 00 00 00 b7 9c 08 00 00 00 00 00 10 11  %f..............
+    0x0050: 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 20 21  .............. !
+    0x0060: 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31  "#$%&'()*+,-./01
+    0x0070: 32 33 34 35 36 37                                234567
+
+
+    timestamp: 2024-04-21T19:54:40.564+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 118 bytes
+    src IP: ::1
+    dst IP: ::1
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 86 dd 60 0e  ..............`.
+    0x0010: 03 5c 00 40 3a 40 00 00 00 00 00 00 00 00 00 00  .\.@:@..........
+    0x0020: 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00  ................
+    0x0030: 00 00 00 00 00 01 81 00 c0 b3 19 8a 00 01 00 6f  ...............o
+    0x0040: 25 66 00 00 00 00 b7 9c 08 00 00 00 00 00 10 11  %f..............
+    0x0050: 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 20 21  .............. !
+    0x0060: 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31  "#$%&'()*+,-./01
+    0x0070: 32 33 34 35 36 37                                234567
 
 The automated tests[2] output: 
 
