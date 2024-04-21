@@ -473,7 +473,7 @@ Test Case 29 - 2 packets capture on the loopback interface - ICMP6 echo request/
     ping6 -c 1 -i lo ::1
 
     sudo ./ipk-sniffer -i lo --icmp6 -n 2
-    
+
     timestamp: 2024-04-21T19:54:40.564+02:00
     src MAC: 00:00:00:00:00:00
     dst MAC: 00:00:00:00:00:00
@@ -506,6 +506,97 @@ Test Case 29 - 2 packets capture on the loopback interface - ICMP6 echo request/
     0x0050: 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 20 21  .............. !
     0x0060: 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31  "#$%&'()*+,-./01
     0x0070: 32 33 34 35 36 37                                234567
+
+Test Case 30 - multiple packets capture on the eth0 interface:
+
+    arp -a
+
+    sudo ./ipk-sniffer -i eth0 -n 6 --udp --arp
+    
+    timestamp: 2024-04-21T20:29:01.712+02:00
+    src MAC: 00:15:5d:a1:d1:4a
+    dst MAC: 00:15:5d:30:2e:47
+    frame length: 84 bytes
+    src IP: 172.20.100.201
+    dst IP: 172.20.96.1
+    src port: 57698
+    dst port: 53
+    byte_offset:
+    0x0000: 00 15 5d 30 2e 47 00 15 5d a1 d1 4a 08 00 45 00  ..]0.G..]..J..E.
+    0x0010: 00 46 aa 0f 40 00 40 11 73 a4 ac 14 64 c9 ac 14  .F..@.@.s...d...
+    0x0020: 60 01 e1 62 00 35 00 32 1d 37 5b 2f 01 00 00 01  `..b.5.2.7[/....
+    0x0030: 00 00 00 00 00 00 01 31 02 39 36 02 32 30 03 31  .......1.96.20.1
+    0x0040: 37 32 07 69 6e 2d 61 64 64 72 04 61 72 70 61 00  72.in-addr.arpa.
+    0x0050: 00 0c 00 01                                      ....
+
+
+    timestamp: 2024-04-21T20:29:01.713+02:00
+    src MAC: 00:15:5d:30:2e:47
+    dst MAC: 00:15:5d:a1:d1:4a
+    frame length: 148 bytes
+    src IP: 172.20.96.1
+    dst IP: 172.20.100.201
+    src port: 53
+    dst port: 57698
+    byte_offset:
+    0x0000: 00 15 5d a1 d1 4a 00 15 5d 30 2e 47 08 00 45 00  ..]..J..]0.G..E.
+    0x0010: 00 86 89 37 00 00 80 11 94 3c ac 14 60 01 ac 14  ...7.....<..`...
+    0x0020: 64 c9 00 35 e1 62 00 72 c0 8a 5b 2f 81 00 00 01  d..5.b.r..[/....
+    0x0030: 00 01 00 00 00 00 01 31 02 39 36 02 32 30 03 31  .......1.96.20.1
+    0x0040: 37 32 07 69 6e 2d 61 64 64 72 04 61 72 70 61 00  72.in-addr.arpa.
+    0x0050: 00 0c 00 01 01 31 02 39 36 02 32 30 03 31 37 32  .....1.96.20.172
+    0x0060: 07 69 6e 2d 61 64 64 72 04 61 72 70 61 00 00 0c  .in-addr.arpa...
+    0x0070: 00 01 00 00 00 00 00 1c 0f 44 45 53 4b 54 4f 50  .........DESKTOP
+    0x0080: 2d 4b 38 56 35 35 36 50 06 6d 73 68 6f 6d 65 03  -K8V556P.mshome.
+    0x0090: 6e 65 74 00                                      net.
+
+
+    timestamp: 2024-04-21T20:29:06.573+02:00
+    src MAC: 00:15:5d:30:2e:47
+    dst MAC: 00:15:5d:a1:d1:4a
+    frame length: 42 bytes
+    src IP: 172.20.96.1
+    dst IP: 172.20.100.201
+    byte_offset:
+    0x0000: 00 15 5d a1 d1 4a 00 15 5d 30 2e 47 08 06 00 01  ..]..J..]0.G....
+    0x0010: 08 00 06 04 00 01 00 15 5d 30 2e 47 ac 14 60 01  ........]0.G..`.
+    0x0020: 00 15 5d a1 d1 4a ac 14 64 c9                    ..]..J..d.
+
+
+    timestamp: 2024-04-21T20:29:06.573+02:00
+    src MAC: 00:15:5d:a1:d1:4a
+    dst MAC: 00:15:5d:30:2e:47
+    frame length: 42 bytes
+    src IP: 172.20.100.201
+    dst IP: 172.20.96.1
+    byte_offset:
+    0x0000: 00 15 5d 30 2e 47 00 15 5d a1 d1 4a 08 06 00 01  ..]0.G..]..J....
+    0x0010: 08 00 06 04 00 02 00 15 5d a1 d1 4a ac 14 64 c9  ........]..J..d.
+    0x0020: 00 15 5d 30 2e 47 ac 14 60 01                    ..]0.G..`.
+
+
+    timestamp: 2024-04-21T20:29:06.759+02:00
+    src MAC: 00:15:5d:a1:d1:4a
+    dst MAC: 00:15:5d:30:2e:47
+    frame length: 42 bytes
+    src IP: 172.20.100.201
+    dst IP: 172.20.96.1
+    byte_offset:
+    0x0000: 00 15 5d 30 2e 47 00 15 5d a1 d1 4a 08 06 00 01  ..]0.G..]..J....
+    0x0010: 08 00 06 04 00 01 00 15 5d a1 d1 4a ac 14 64 c9  ........]..J..d.
+    0x0020: 00 00 00 00 00 00 ac 14 60 01                    ........`.
+
+
+    timestamp: 2024-04-21T20:29:06.760+02:00
+    src MAC: 00:15:5d:30:2e:47
+    dst MAC: 00:15:5d:a1:d1:4a
+    frame length: 42 bytes
+    src IP: 172.20.96.1
+    dst IP: 172.20.100.201
+    byte_offset:
+    0x0000: 00 15 5d a1 d1 4a 00 15 5d 30 2e 47 08 06 00 01  ..]..J..]0.G....
+    0x0010: 08 00 06 04 00 02 00 15 5d 30 2e 47 ac 14 60 01  ........]0.G..`.
+    0x0020: 00 15 5d a1 d1 4a ac 14 64 c9                    ..]..J..d.
 
 The automated tests[2] output: 
 
