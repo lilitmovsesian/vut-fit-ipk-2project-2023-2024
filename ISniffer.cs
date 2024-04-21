@@ -14,7 +14,7 @@ namespace ipkSniffer
     public abstract class ISniffer
     {
         public abstract void Start();
-        protected abstract void PacketHandler(object sender, CaptureEventArgs e);   
+        protected abstract void PacketHandler(object sender, PacketCapture e);   
         protected abstract void ApplyFilters();
     }
 }

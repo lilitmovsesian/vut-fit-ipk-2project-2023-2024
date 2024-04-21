@@ -39,9 +39,9 @@ namespace ipkSniffer
             return formattedTime.ToString();
         }
 
-        public static string PrintByteOffset(PacketDotNet.Packet packet)
+        public static string FormatByteOffset(PacketDotNet.Packet packet)
         {
-            var data = packet.Bytes;
+            var data = packet.BytesSegment.Bytes;
             var output = new StringBuilder();
             for (int i = 0; i < data.Length; i += 16)
             {
@@ -49,7 +49,7 @@ namespace ipkSniffer
                 for (int j = 0; j < 16 && i + j < data.Length; j++)
                 {
                     output.Append($"{data[i+j]:x2} ");
-                }
+                } 
                 if (data.Length - i < 16)
                 {
                     output.Append(new string(' ', 3 * (16 - (data.Length - i))));

@@ -57,15 +57,16 @@ namespace ipkSniffer
                 _device.Close();
                 Environment.Exit(0);
             };
-            _device.Open(DeviceMode.Promiscuous, 100);
+            _device.Open(DeviceModes.Promiscuous, 1000);
             ApplyFilters();
-            _device.OnPacketArrival += PacketHandler;
-            _device.StartCapture();
+            _device.OnPacketArrival += new PacketArrivalEventHandler(PacketHandler);
+            _device.Capture();
         }
 
-        protected override void PacketHandler(object sender, CaptureEventArgs e)
+        protected override void PacketHandler(object sender, PacketCapture e)
         {
-            var packet = PacketDotNet.Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+            var rawPacket = e.GetPacket();
+            var packet = PacketDotNet.Packet.ParsePacket(rawPacket.LinkLayerType, rawPacket.Data);
             if (packet is PacketDotNet.NullPacket){
                 return;
             }
@@ -75,7 +76,7 @@ namespace ipkSniffer
             PacketDotNet.ArpPacket arpPacket = packet.Extract<PacketDotNet.ArpPacket>();
             PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
 
-            var time = PacketData.FormatTime(e.Packet.Timeval.Date);
+            var time = PacketData.FormatTime(e.Header.Timeval.Date);
             var output = new StringBuilder();
 
             output.AppendLine($"timestamp: {time}");
@@ -86,7 +87,7 @@ namespace ipkSniffer
                 output.AppendLine($"src MAC: {sourceMac}");
                 output.AppendLine($"dst MAC: {destinationMac}");
             }
-            output.AppendLine($"frame length: {e.Packet.Data.Length} bytes");
+            output.AppendLine($"frame length: {e.Data.Length} bytes");
             if (arpPacket == null) {
                 output.AppendLine($"src IP: {ipPacket.SourceAddress}");
                 output.AppendLine($"dst IP: {ipPacket.DestinationAddress}");
@@ -107,14 +108,13 @@ namespace ipkSniffer
             }
             
             output.AppendLine();
-            output.AppendLine(PacketData.PrintByteOffset(packet));
+            output.AppendLine(PacketData.FormatByteOffset(packet));
 
             Console.WriteLine(output.ToString());
             if (++_counter != _numberOfPackets)
             {
                 return;
             }
-            
             if (_device != null){
                 _device.StopCapture();
                 _device.Close();

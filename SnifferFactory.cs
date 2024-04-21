@@ -38,7 +38,7 @@ namespace ipkSniffer
             {
                 foreach (var dev in devices)
                 {
-                    Console.WriteLine(dev.Name);
+                    Console.WriteLine(dev.Name.PadRight(20, ' ') + " " + dev.Description);
                 }
                 Environment.Exit(0);
             }
@@ -59,7 +59,7 @@ namespace ipkSniffer
             return new Sniffer(_device, _tcp, _udp, _port, _sourcePort, _destinationPort, _arp, _ndp, _icmp4, _icmp6, _igmp, _mld, _numberOfPackets);
         }
 
-        public static void ParseArguments(string[] args)
+        private static void ParseArguments(string[] args)
         {
             if (args.Length == 0){
                 _showInterfaces = true;

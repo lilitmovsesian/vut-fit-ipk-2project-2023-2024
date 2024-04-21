@@ -7,15 +7,19 @@
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
-    <PublishSingleFile>true</PublishSingleFile>
-  <DebugType>embedded</DebugType>
     <OutputPath>./</OutputPath>
     <PublishAot>false</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="PacketDotNet" Version="1.4.7" />
-    <PackageReference Include="SharpPcap" Version="5.4.0" />
+    <PackageReference Include="SharpPcap" Version="6.3.0" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>embedded</DebugType>
+    <PublishSingleFile>True</PublishSingleFile>
+  </PropertyGroup>
 
 </Project>
