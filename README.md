@@ -10,7 +10,7 @@ This program serves as a network analyzer (sniffer) for capturing and filtering 
 The sniffer can be compiled by `make` command, the executable is named `ipk-sniffer`. The sniffer application can be run as following:
 
     ./ipk-sniffer [-i interface | --interface interface] {-p|--port-source|--port-destination port [--tcp|-t] [--udp|-u]} [--arp] [--ndp] [--icmp4] [--icmp6] [--igmp] [--mld] {-n num}
-    ./ipk-sniffer [-i]
+    ./ipk-sniffer [-i | --interface]
 
 
     Command Line Interface Arguments:
