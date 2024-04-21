@@ -329,7 +329,7 @@ Test Case 17 - MLD on the eth0 interface with appropriate filtering:
     0x0030: 00 00 00 00 00 16 83 00 4a c9 00 00 00 00 00 00  ........J.......
     0x0040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00        ..............
 
-Test Case 17 - MLD on the eth0 interface with ICMP6 filtering:
+Test Case 18 - MLD on the eth0 interface with ICMP6 filtering:
 
     test.py:
         from scapy.all import *
@@ -354,13 +354,13 @@ Test Case 17 - MLD on the eth0 interface with ICMP6 filtering:
     0x0040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00        ..............
 
 
-Test Case 18 - CLI Arguments:
+Test Case 19 - CLI Arguments:
 
     sudo ./ipk-sniffer -i --tcp
     
     Error: Interface unspecified.
 
-Test Case 19 - CLI Arguments:
+Test Case 20 - CLI Arguments:
      
     sudo ./ipk-sniffer
 
@@ -373,25 +373,25 @@ Test Case 19 - CLI Arguments:
     dbus-system          D-Bus system bus
     dbus-session         D-Bus session bus
 
-Test Case 20 - CLI Arguments:
+Test Case 21 - CLI Arguments:
 
     sudo ./ipk-sniffer --udp
     
     Error: Invalid arguments.
 
-Test Case 21 - CLI Arguments:
+Test Case 22 - CLI Arguments:
 
     sudo ./ipk-sniffer -i eth0 --port-source 23 --udp -p 1234
     
     Error: -p argument cannot be specified with --port-source and --port-destination arguments.
 
-Test Case 22 - CLI Arguments:
+Test Case 23 - CLI Arguments:
 
     sudo ./ipk-sniffer -i eth0 --port-source 23
 
     Error: --tcp or --udp argument should be specified.
 
-Test Case 23 - CLI Arguments:
+Test Case 24 - CLI Arguments:
 
     sudo ./ipk-sniffer -i
 
@@ -404,13 +404,13 @@ Test Case 23 - CLI Arguments:
     dbus-system          D-Bus system bus
     dbus-session         D-Bus session bus
 
-Test Case 24 - CLI Arguments:
+Test Case 25 - CLI Arguments:
 
     sudo ./ipk-sniffer -i lo0
     
     Error: Failed to find the specified interface.
 
-Test Case 25 - CLI Arguments:
+Test Case 26 - CLI Arguments:
     
     sudo ./ipk-sniffer --interface
     
