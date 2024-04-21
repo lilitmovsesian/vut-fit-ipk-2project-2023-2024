@@ -65,7 +65,7 @@ Test Case 1 - ARP on loopback interface without filtering:
     frame length: 58 bytes
     src IP: 127.0.0.1
     dst IP: 127.0.0.1
-
+    byte_offset:
     0x0000: ff ff ff ff ff ff 00 00 00 00 00 00 08 06 00 01  ................
     0x0010: 08 00 06 04 00 01 00 00 00 00 00 00 7f 00 00 01  ................
     0x0020: 00 00 00 00 00 00 7f 00 00 01 00 00 00 00 00 00  ................
@@ -83,7 +83,7 @@ Test Case 2 - ARP on loopback interface with appropriate filtering:
     frame length: 58 bytes
     src IP: 127.0.0.1
     dst IP: 127.0.0.1
-
+    byte_offset:
     0x0000: ff ff ff ff ff ff 00 00 00 00 00 00 08 06 00 01  ................
     0x0010: 08 00 06 04 00 01 00 00 00 00 00 00 7f 00 00 01  ................
     0x0020: 00 00 00 00 00 00 7f 00 00 01 00 00 00 00 00 00  ................
@@ -110,7 +110,7 @@ Test Case 4 - TCP on loopback interface with appropriate filtering:
     dst IP: 127.0.0.1
     src port: 4566
     dst port: 4568
-
+    byte_offset:
     0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
     0x0010: 00 3c ef 24 40 00 40 06 4d 95 7f 00 00 01 7f 00  .<.$@.@.M.......
     0x0020: 00 01 11 d6 11 d8 d1 e4 42 ba 00 00 00 00 a0 02  ........B.......
@@ -145,7 +145,7 @@ Test Case 7 - UDP on loopback interface with appropriate filtering:
     dst IP: 127.0.0.1
     src port: 4550
     dst port: 4551
-
+    byte_offset:
     0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
     0x0010: 00 28 89 17 40 00 40 11 b3 ab 7f 00 00 01 7f 00  .(..@.@.........
     0x0020: 00 01 11 c6 11 c7 00 14 fe 27 48 65 6c 6c 6f 20  .........'Hello
@@ -163,7 +163,7 @@ Test Case 8 - ICMP4 on loopback interface without filtering:
     frame length: 98 bytes
     src IP: 127.0.0.1
     dst IP: 127.0.0.1
-
+    byte_offset:
     0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
     0x0010: 00 54 c4 f5 40 00 40 01 77 b1 7f 00 00 01 7f 00  .T..@.@.w.......
     0x0020: 00 01 08 00 61 30 2b 04 00 01 91 0e 25 66 00 00  ....a0+.....%f..
@@ -184,7 +184,7 @@ Test Case 9 - ICMP4 on loopback interface with appropriate filtering:
     frame length: 98 bytes
     src IP: 127.0.0.1
     dst IP: 127.0.0.1
-
+    byte_offset:
     0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
     0x0010: 00 54 cf 71 40 00 40 01 6d 35 7f 00 00 01 7f 00  .T.q@.@.m5......
     0x0020: 00 01 08 00 2b fc 1b 25 00 01 bd 0e 25 66 00 00  ....+..%....%f..
@@ -212,7 +212,7 @@ Test Case 11 - ICMP6 on loopback interface with appropriate filtering:
     frame length: 118 bytes
     src IP: ::1
     dst IP: ::1
-
+    byte_offset:
     0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 86 dd 60 05  ..............`.
     0x0010: ad fa 00 40 3a 40 00 00 00 00 00 00 00 00 00 00  ...@:@..........
     0x0020: 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00  ................
@@ -241,7 +241,7 @@ Test Case 13 - NDP on the eth0 interface with appropriate filtering:
     frame length: 86 bytes
     src IP: fe80::215:5dff:fea1:d593
     dst IP: ff02::1:ff00:1
-
+    byte_offset:
     0x0000: 33 33 ff 00 00 01 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
     0x0010: 00 00 00 20 3a ff fe 80 00 00 00 00 00 00 02 15  ... :...........
     0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
@@ -261,7 +261,7 @@ Test Case 14 - NDP on the eth0 interface with ICMP6 filtering:
     frame length: 86 bytes
     src IP: fe80::215:5dff:fea1:d593
     dst IP: ff02::1:ff00:1
-
+    byte_offset:
     0x0000: 33 33 ff 00 00 01 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
     0x0010: 00 00 00 20 3a ff fe 80 00 00 00 00 00 00 02 15  ... :...........
     0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
@@ -287,7 +287,7 @@ Test Case 15 - IGMP on loopback interface with appropriate filtering:
     frame length: 42 bytes
     src IP: 127.0.0.1
     dst IP: 127.0.0.1
-
+    byte_offset:
     0x0000: ff ff ff ff ff ff 00 00 00 00 00 00 08 00 45 00  ..............E.
     0x0010: 00 1c 00 01 00 00 01 02 bb dd 7f 00 00 01 7f 00  ................
     0x0020: 00 01 11 14 ee eb 00 00 00 00                    ..........
@@ -322,7 +322,7 @@ Test Case 17 - MLD on the eth0 interface with appropriate filtering:
     frame length: 78 bytes
     src IP: fe80::215:5dff:fea1:d593
     dst IP: ff02::16
-
+    byte_offset:
     0x0000: 33 33 00 00 00 16 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
     0x0010: 00 00 00 18 3a 01 fe 80 00 00 00 00 00 00 02 15  ....:...........
     0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
@@ -346,7 +346,7 @@ Test Case 18 - MLD on the eth0 interface with ICMP6 filtering:
     frame length: 78 bytes
     src IP: fe80::215:5dff:fea1:d593
     dst IP: ff02::16
-
+    byte_offset:
     0x0000: 33 33 00 00 00 16 00 15 5d a1 d5 93 86 dd 60 00  33......].....`.
     0x0010: 00 00 00 18 3a 01 fe 80 00 00 00 00 00 00 02 15  ....:...........
     0x0020: 5d ff fe a1 d5 93 ff 02 00 00 00 00 00 00 00 00  ]...............
@@ -422,6 +422,77 @@ Test Case 26 - CLI Arguments:
     nfqueue              Linux netfilter queue (NFQUEUE) interface
     dbus-system          D-Bus system bus
     dbus-session         D-Bus session bus
+
+Test Case 27 - 2 packets capture on the loopback interface - TCP:
+
+    echo "Hello world" | nc -s 127.0.0.1 -p 4550 127.0.0.1 4551
+
+    sudo ./ipk-sniffer -i lo -n 2
+
+    timestamp: 2024-04-21T16:58:17.722+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 74 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4550
+    dst port: 4551
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 3c c9 36 40 00 40 06 73 83 7f 00 00 01 7f 00  .<.6@.@.s.......
+    0x0020: 00 01 11 c6 11 c7 76 17 da 4e 00 00 00 00 a0 02  ......v..N......
+    0x0030: ff d7 fe 30 00 00 02 04 ff d7 04 02 08 0a cb e6  ...0............
+    0x0040: 85 31 00 00 00 00 01 03 03 07                    .1........
+
+
+    timestamp: 2024-04-21T16:58:17.722+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 54 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4551
+    dst port: 4550
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 28 00 00 40 00 40 06 3c ce 7f 00 00 01 7f 00  .(..@.@.<.......
+    0x0020: 00 01 11 c7 11 c6 00 00 00 00 76 17 da 4f 50 14  ..........v..OP.
+    0x0030: 00 00 3d da 00 00                                ..=...
+
+Test Case 28 - 2 packets capture on the loopback interface - UDP:
+
+    echo "Hello world" | nc -u -s 127.0.0.1 -p 4550 127.0.0.1 4551
+
+    sudo ./ipk-sniffer -i lo -n 2
+    
+    timestamp: 2024-04-21T16:59:40.254+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 54 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4550
+    dst port: 4551
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 28 68 3a 40 00 40 11 d4 88 7f 00 00 01 7f 00  .(h:@.@.........
+    0x0020: 00 01 11 c6 11 c7 00 14 fe 27 48 65 6c 6c 6f 20  .........'Hello
+    0x0030: 77 6f 72 6c 64 0a                                world.
+
+
+    timestamp: 2024-04-21T16:59:40.254+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 82 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    byte_offset:
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 c0  ..............E.
+    0x0010: 00 44 89 21 00 00 40 01 f2 d5 7f 00 00 01 7f 00  .D.!..@.........
+    0x0020: 00 01 03 03 69 5b 00 00 00 00 45 00 00 28 68 3a  ....i[....E..(h:
+    0x0030: 40 00 40 11 d4 88 7f 00 00 01 7f 00 00 01 11 c6  @.@.............
+    0x0040: 11 c7 00 14 fe 27 48 65 6c 6c 6f 20 77 6f 72 6c  .....'Hello worl
+    0x0050: 64 0a                                            d.
 
 The automated tests[2] output: 
 

@@ -29,6 +29,9 @@ namespace ipkSniffer
         private static int _numberOfPackets = 1;
         private static ICaptureDevice? _device = null;
         
+        /*This method prints the available interfaces in case of unspecified
+        interface or finds the device if specified. Then it creates an instance 
+        of a Sniffer class based on the arguments and returns it.*/
         public static Sniffer CreateSniffer(string[] args)
         {
             ParseArguments(args);
@@ -59,15 +62,19 @@ namespace ipkSniffer
             return new Sniffer(_device, _tcp, _udp, _port, _sourcePort, _destinationPort, _arp, _ndp, _icmp4, _icmp6, _igmp, _mld, _numberOfPackets);
         }
 
+        /*This method manually parses CLI arguments and sets variables. */
         private static void ParseArguments(string[] args)
         {
+            /* If no arguments provided, show interfaces*/
             if (args.Length == 0){
                 _showInterfaces = true;
             }
+            /* If only one argument is provided and it is not -i or --interface, show error. */
             if (args.Length == 1 && (args[0] != "-i" && args[0] != "--interface")){
                 Console.Error.WriteLine("Error: Interface unspecified.");
                 Environment.Exit(1);
             }
+            /* A loop through arguments.*/
             for (int i = 0; i < args.Length; i++){
                 switch (args[i]){
                     case "-i":
@@ -145,14 +152,17 @@ namespace ipkSniffer
                         break;
                 }
             }
+            /*If interface is unspecified but there are other arguments, print error. */
             if (args.Length > 1 && _interfaceName == null){
                 Console.Error.WriteLine("Error: Interface unspecified.");
                 Environment.Exit(1);
             }
+            /*If port is set with incorrect protocol filtering, print error.*/
             if ((_port != null || _destinationPort != null || _sourcePort != null) && !_tcp && !_udp){
                 Console.Error.WriteLine("Error: --tcp or --udp argument should be specified.");
                 Environment.Exit(1);
             }
+            /*If port arguments are set incorrectly, print error.*/
             if (_port != null && (_destinationPort != null || _sourcePort != null)){
                 Console.Error.WriteLine("Error: -p argument cannot be specified with --port-source and --port-destination arguments.");
                 Environment.Exit(1);

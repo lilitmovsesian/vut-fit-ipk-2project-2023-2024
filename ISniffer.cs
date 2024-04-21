@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 
 namespace ipkSniffer
 {
+    /* Abstract class declaring abstract methods for Sniffer implementation*/
     public abstract class ISniffer
     {
         public abstract void Start();

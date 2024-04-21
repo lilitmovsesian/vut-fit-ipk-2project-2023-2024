@@ -11,6 +11,8 @@ using System.Net.NetworkInformation;
 
 namespace ipkSniffer
 {
+    /* A class that implements the methods of ISniffer 
+    interface and provides the main functionality of sniffing. */
     public class Sniffer : ISniffer
     {
         private bool _tcp = false;
@@ -27,6 +29,7 @@ namespace ipkSniffer
         private int _numberOfPackets = 1;
         private ICaptureDevice? _device = null;
         private int _counter = 0;
+        /* Initializes a new instance of the Sniffer class. */
         public Sniffer(ICaptureDevice device, bool tcp, bool udp, int? port, int? sourcePort, int? destinationPort, bool arp, bool ndp, bool icmp4, bool icmp6, bool igmp, bool mld, int numberOfPackets)
         {
             _device = device;
@@ -44,6 +47,9 @@ namespace ipkSniffer
             _numberOfPackets = numberOfPackets;
         }
 
+        /*Sets a cancel key press handle, opens a device in promiscuous mode,
+        invokes a method for filtering, attaches the PacketHandler method to 
+        the PacketArrival event and starts capturing.*/
         public override void Start()
         {
             if (_device == null)
@@ -63,6 +69,7 @@ namespace ipkSniffer
             _device.Capture();
         }
 
+        /*A method for packet handling invoked whenever a packet is captured.*/
         protected override void PacketHandler(object sender, PacketCapture e)
         {
             var rawPacket = e.GetPacket();
@@ -70,17 +77,19 @@ namespace ipkSniffer
             if (packet is PacketDotNet.NullPacket){
                 return;
             }
+            /*Extracting various types of packets.*/
             PacketDotNet.IPPacket ipPacket = packet.Extract<PacketDotNet.IPPacket>();
             PacketDotNet.TcpPacket tcpPacket = packet.Extract<PacketDotNet.TcpPacket>();
             PacketDotNet.UdpPacket udpPacket = packet.Extract<PacketDotNet.UdpPacket>();
             PacketDotNet.ArpPacket arpPacket = packet.Extract<PacketDotNet.ArpPacket>();
             PacketDotNet.EthernetPacket ethernetPacket = packet.Extract<PacketDotNet.EthernetPacket>();
 
+            /*Formats and append time. */
             var time = PacketData.FormatTime(e.Header.Timeval.Date);
             var output = new StringBuilder();
-
             output.AppendLine($"timestamp: {time}");
 
+            /*Extracting MAC addresses if Ethernet packet.*/
             if (ethernetPacket != null){
                 var sourceMac = PacketData.FormatMac(ethernetPacket.SourceHardwareAddress.ToString());
                 var destinationMac = PacketData.FormatMac(ethernetPacket.DestinationHardwareAddress.ToString());
@@ -88,6 +97,7 @@ namespace ipkSniffer
                 output.AppendLine($"dst MAC: {destinationMac}");
             }
             output.AppendLine($"frame length: {e.Data.Length} bytes");
+            /*Handles arpPacket to extract the source and destination IP.*/
             if (arpPacket == null) {
                 output.AppendLine($"src IP: {ipPacket.SourceAddress}");
                 output.AppendLine($"dst IP: {ipPacket.DestinationAddress}");
@@ -96,6 +106,7 @@ namespace ipkSniffer
                 output.AppendLine($"src IP: {arpPacket.SenderProtocolAddress}");
                 output.AppendLine($"dst IP: {arpPacket.TargetProtocolAddress}");
             }
+            /*Appends the port number if the captured packet is of TCP or UDP protocol.*/
             if (tcpPacket != null)
             {
                 output.AppendLine($"src port: {tcpPacket.SourcePort}");
@@ -106,11 +117,11 @@ namespace ipkSniffer
                 output.AppendLine($"src port: {udpPacket.SourcePort}");
                 output.AppendLine($"dst port: {udpPacket.DestinationPort}");
             }
-            
-            output.AppendLine();
             output.AppendLine(PacketData.FormatByteOffset(packet));
 
             Console.WriteLine(output.ToString());
+            /*If the specified number of packets to capture is reached,
+            stops the capture process and closes the device.*/
             if (++_counter != _numberOfPackets)
             {
                 return;
@@ -122,6 +133,8 @@ namespace ipkSniffer
             Environment.Exit(0);
         }
 
+        /*Construct and applies a filter based on the arguments, construct
+        the logical connections or/and between the filter options.*/
         protected override void ApplyFilters()
         {
             var filter = "";

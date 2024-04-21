@@ -13,6 +13,7 @@ namespace ipkSniffer
 {
     public class PacketData
     {
+        /*A method that separated MAC address with colon.*/
         public static string FormatMac(string macAddress)
         {
             var formattedMac = new StringBuilder();
@@ -30,6 +31,7 @@ namespace ipkSniffer
             return formattedMac.ToString();
         }
 
+        /*A method to format date, time and timezone correctly.*/
         public static string FormatTime(DateTime time)
         {
             var formattedTime = new StringBuilder();
@@ -39,25 +41,33 @@ namespace ipkSniffer
             return formattedTime.ToString();
         }
 
+        /* A method for creating a string of packet data. */
         public static string FormatByteOffset(PacketDotNet.Packet packet)
         {
             var data = packet.BytesSegment.Bytes;
             var output = new StringBuilder();
+            output.AppendLine("byte_offset: ");
+            /* Loop through data in 16 bytes, then loop through each byte. */
             for (int i = 0; i < data.Length; i += 16)
             {
+                /* Appends the byte offset in hexadecimal format. */
                 output.Append($"0x{i:x4}: ");
                 for (int j = 0; j < 16 && i + j < data.Length; j++)
                 {
+                    /* Appends the hexadecimal representation of bytes.*/
                     output.Append($"{data[i+j]:x2} ");
                 } 
                 if (data.Length - i < 16)
                 {
+                    /*Alligns the last row. */
                     output.Append(new string(' ', 3 * (16 - (data.Length - i))));
                 }
                 output.Append(" ");
+                /* Appends ASCII representation of bytes to the string. */
                 for (int j = 0; j < 16 && i + j < data.Length; j++)
                 {
                     char c = (char)data[i + j];
+                    /*Appends dot in case of non-printable characters.*/
                     output.Append((c >= 32 && c <= 126) ? c : '.');
                 }
                 output.AppendLine();
