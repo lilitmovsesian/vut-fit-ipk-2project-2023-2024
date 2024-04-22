@@ -51,7 +51,7 @@ The `ISniffer` class is an abstract interface class and serves as a base for imp
 No extra features were implemented in this project.
 
 ### Testing
-The sniffer was tested manually on the provided reference Linux `IPK24` VM and on the Windows WSL using two terminals for simultaneous operations - one running the sniffer and the other for packet transmission. The sniffer was tested to capture packet protocols specified in the task, as well as for several edge cases of program CLI arguments. Additionally, the sniffer was tested on `eth0` interface and the captured packet was manually cross-referenced against Wireshark results for validation. The project was also tested using automated tests [2]. The following test cases were conducted on Windows WSL.
+The sniffer was tested manually on the provided reference Linux `IPK24` VM with activated reference environment [7] and on the Windows WSL using two terminals for simultaneous operations - one running the sniffer and the other for packet transmission. The sniffer was tested to capture packet protocols specified in the task, as well as for several edge cases of program CLI arguments. Additionally, the sniffer was tested on `eth0` interface and the captured packet was manually cross-referenced against Wireshark results for validation. The project was also tested using automated tests [2]. The following test cases were conducted on Windows WSL (1-31) and on the provided reference Linux `IPK24` (32-34).
 
 Test Case 1 - ARP on loopback interface without filtering:
 
@@ -598,7 +598,7 @@ Test Case 30 - multiple packets capture on the eth0 interface:
     0x0010: 08 00 06 04 00 02 00 15 5d 30 2e 47 ac 14 60 01  ........]0.G..`.
     0x0020: 00 15 5d a1 d1 4a ac 14 64 c9                    ..]..J..d.
 
-The automated tests[2] output: 
+Test Case 31 - The automated tests[2] output: 
 
     .
     Sent 1 packets.
@@ -622,15 +622,118 @@ The automated tests[2] output:
 
     OK
 
+The following tests were conducted on the reference Linux `IPK24` VM.
+
+Test Case 32 - 2 packets capture on the loopback interface - TCP with filtering:
+
+    echo "Hello world" | nc -s 127.0.0.1 -p 4566 -w 1 -q 1 127.0.0.1 4568
+
+    sudo env LD_LIBRARY_PATH="$LD_LIBRARY_PATH" ./ipk-sniffer -i lo -p 4566 --tcp -n 2
+
+    timestamp: 2024-04-22T13:58:45.868+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 74 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4566
+    dst port: 4568
+    byte_offset: 
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 3c c7 c8 40 00 40 06 74 f1 7f 00 00 01 7f 00  .<..@.@.t.......
+    0x0020: 00 01 11 d6 11 d8 de 7d f8 f5 00 00 00 00 a0 02  .......}........
+    0x0030: ff d7 fe 30 00 00 02 04 ff d7 04 02 08 0a 77 1d  ...0..........w.
+    0x0040: 4b e2 00 00 00 00 01 03 03 07                    K.........
+
+
+    timestamp: 2024-04-22T13:58:45.868+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 54 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4568
+    dst port: 4566
+    byte_offset: 
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 28 00 00 40 00 40 06 3c ce 7f 00 00 01 7f 00  .(..@.@.<.......
+    0x0020: 00 01 11 d8 11 d6 00 00 00 00 de 7d f8 f6 50 14  ...........}..P.
+    0x0030: 00 00 b6 ab 00 00                                ......
+
+Test Case 33 - 2 packets capture on the loopback interface - UDP without filtering:
+
+    echo "Hello world" | nc -u -s 127.0.0.1 -p 4550 -w 1 -q 1 127.0.0.1 4551
+
+    sudo env LD_LIBRARY_PATH="$LD_LIBRARY_PATH" ./ipk-sniffer -i lo -n 2           
+
+    timestamp: 2024-04-22T14:16:09.704+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 54 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    src port: 4550
+    dst port: 4551
+    byte_offset: 
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 00  ..............E.
+    0x0010: 00 28 11 4d 40 00 40 11 2b 76 7f 00 00 01 7f 00  .(.M@.@.+v......
+    0x0020: 00 01 11 c6 11 c7 00 14 fe 27 48 65 6c 6c 6f 20  .........'Hello 
+    0x0030: 77 6f 72 6c 64 0a                                world.
+
+
+    timestamp: 2024-04-22T14:16:09.704+02:00
+    src MAC: 00:00:00:00:00:00
+    dst MAC: 00:00:00:00:00:00
+    frame length: 82 bytes
+    src IP: 127.0.0.1
+    dst IP: 127.0.0.1
+    byte_offset: 
+    0x0000: 00 00 00 00 00 00 00 00 00 00 00 00 08 00 45 c0  ..............E.
+    0x0010: 00 44 95 5d 00 00 40 01 e6 99 7f 00 00 01 7f 00  .D.]..@.........
+    0x0020: 00 01 03 03 69 5b 00 00 00 00 45 00 00 28 11 4d  ....i[....E..(.M
+    0x0030: 40 00 40 11 2b 76 7f 00 00 01 7f 00 00 01 11 c6  @.@.+v..........
+    0x0040: 11 c7 00 14 fe 27 48 65 6c 6c 6f 20 77 6f 72 6c  .....'Hello worl
+    0x0050: 64 0a                                            d.
+
+
+Test Case 34 - The automated tests[2] output: 
+    
+    sudo env LD_LIBRARY_PATH="$LD_LIBRARY_PATH" python3 ipkSnifferTests.py
+
+    .
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    ..
+    Sent 1 packets.
+    .
+    ----------------------------------------------------------------------
+    Ran 8 tests in 26.724s
+
+    OK
+
+
 ### References
 [1]: Veselý, Vladimír. "IPK-Projects-2024/Project 2/zeta". Available at: http://git.fit.vutbr.cz/NESFIT/IPK-Projects-2024/src/branch/master.
 
 [2]: Jeřábek, Jakub. "IPK-Sniffer-Tests". Available at: http://git.fit.vutbr.cz/xjerab28/IPK-Sniffer-Tests/src/branch/main.
 
-[3]: Wikipedia, the free encyclopedia: http://en.wikipedia.org/wiki/Pcap
+[3]: Wikipedia, the free encyclopedia: http://en.wikipedia.org/wiki/Pcap.
 
-[4]: Wikipedia, the free encyclopedia: https://en.wikipedia.org/wiki/ICMPv6
+[4]: Wikipedia, the free encyclopedia: https://en.wikipedia.org/wiki/ICMPv6.
 
-[5]: Morgan, Chris; Kaanich, Ayoub; Li, Lex; Pluskal, Jan. "SharpPcap - Official repository. Example3.BasicCap." Available at: https://github.com/dotpcap/sharppcap/blob/master/Examples/Example3.BasicCap
+[5]: Morgan, Chris; Kaanich, Ayoub; Li, Lex; Pluskal, Jan. "SharpPcap - Official repository. Example3.BasicCap." Available at: https://github.com/dotpcap/sharppcap/blob/.master/Examples/Example3.BasicCap
 
-[6]: Morgan, Chris; Kaanich, Ayoub; Li, Lex; Pluskal, Jan. "SharpPcap - Official repository. Example12.PacketManipulation." Available at: https://github.com/dotpcap/sharppcap/blob/master/Examples/Example12.PacketManipulation
+[6]: Morgan, Chris; Kaanich, Ayoub; Li, Lex; Pluskal, Jan. "SharpPcap - Official repository. Example12.PacketManipulation." Available at: https://github.com/dotpcap/.sharppcap/blob/master/Examples/Example12.PacketManipulation
+
+[7]: Dolejška, Daniel. "Shared Development Environments/ipk/csharp.nix". Available at: https://git.fit.vutbr.cz/NESFIT/dev-envs/src/branch/main.

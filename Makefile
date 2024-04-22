@@ -1,10 +1,4 @@
-.PHONY: all build publish clean
+all: build
 
-all: publish clean
-
-publish:
-	dotnet publish -c Release --self-contained false -o . --nologo
-
-
-clean: 
-	dotnet clean
+build: *.cs *.csproj
+	dotnet publish --ucr -c Release -o .

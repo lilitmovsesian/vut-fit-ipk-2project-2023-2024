@@ -1,20 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>ipk-sniffer</AssemblyName>
-    <RootNamespace>ipkSniffer</RootNamespace>
-    <PublishSingleFile>True</PublishSingleFile>
-    <DebugType>embedded</DebugType>
-    <PublishAot>false</PublishAot>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ipkSniffer</RootNamespace>
+        <AssemblyName>ipk-sniffer</AssemblyName>
+        <DebugType>embedded</DebugType>
+    	<PublishAot>false</PublishAot>
+    	<PublishSingleFile>True</PublishSingleFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="PacketDotNet" Version="1.4.7" />
-    <PackageReference Include="SharpPcap" Version="6.3.0" />
-  </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="PacketDotNet" Version="1.4.7" />
+      <PackageReference Include="SharpPcap" Version="6.3.0" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    </PropertyGroup>
 
 </Project>
