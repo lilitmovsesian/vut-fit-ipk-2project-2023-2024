@@ -2,6 +2,14 @@
 
 At present, I am not aware of any limitations or issues with the implemented application. All committed changes are listed below.
 
+[e4c5633](http://https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/commit/e4c5633c344a4c74154fc394d6b43cda9bf28f22) - root, Mon Apr 22 15:29:00 2024 +0200 : fix: fixed Makefile and XML
+
+[47a821a](http://https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/commit/47a821a758064c0b0bb74942f3ddf1cd63c058aa) - root, Sun Apr 21 22:41:02 2024 +0200 : feat: added a test case
+
+[51c05c5](http://https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/commit/51c05c58bdcecd18063c1e604a3a8849098a10bd) - root, Sun Apr 21 22:06:19 2024 +0200 : fix: fixed icmp6 filtering bug
+
+[915da94](http://https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/commit/915da943aa0306ef0ccf51e4f1a21422c214acb9) - root, Sun Apr 21 19:46:36 2024 +0200 : feat: added CHANGELOG.md
+
 [f2db7b4](https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/f2db7b4116a2379ca0ae4f44d95c30ddc5eb8fc0) - root, Sun Apr 21 19:31:09 2024 +0200 : feat: added comments and minor changes
 
 [0b3ddaa](https://git.fit.vutbr.cz/xmovse00/ipk24-sniffer.git/0b3ddaac72d33b2a495e289e0e60ecb99be7a4a4) - root, Sun Apr 21 17:55:25 2024 +0200 : fix: fixed typo
