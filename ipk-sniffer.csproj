@@ -4,10 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
-    <OutputPath>./</OutputPath>
+    <AssemblyName>ipk-sniffer</AssemblyName>
+    <RootNamespace>ipkSniffer</RootNamespace>
+    <PublishSingleFile>True</PublishSingleFile>
+    <DebugType>embedded</DebugType>
     <PublishAot>false</PublishAot>
   </PropertyGroup>
 
@@ -15,11 +16,5 @@
     <PackageReference Include="PacketDotNet" Version="1.4.7" />
     <PackageReference Include="SharpPcap" Version="6.3.0" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>embedded</DebugType>
-    <PublishSingleFile>True</PublishSingleFile>
-  </PropertyGroup>
 
 </Project>

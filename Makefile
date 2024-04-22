@@ -1,7 +1,10 @@
-all: build clean
+.PHONY: all build publish clean
 
-build:
-	dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true -o ./
+all: publish clean
 
-clean:
+publish:
+	dotnet publish -c Release --self-contained false -o . --nologo
+
+
+clean: 
 	dotnet clean
